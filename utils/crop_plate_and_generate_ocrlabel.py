@@ -47,18 +47,20 @@ def write_plate_image(img_path, out_dir, label_txt):
     write multiple plate images into files.
     """
 
-    car_images = glob.glob(img_path + '*/*.jpg')
+    car_images = glob.glob(img_path + '/*.jpg')
+    #car_images = glob.glob(img_path + '/*/*.jpg')
+    print "Total image found", len(car_images)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     fo = codecs.open(label_txt, "w", encoding='utf-8')
 
     for i, image_name in enumerate(car_images):
-        if i >5:
-            continue
+        #if i >5:
+        #    continue
         if i%1000 == 0:
-            print('### {}: Processing {}'.format(i, bname.encode('utf8')))
-
-        fname_split = os.path.basename(image_name).split('_')
+            print('### {}: Processing {}'.format(i, image_name))
+        bname = os.path.basename(image_name)
+        fname_split =bname.split('-')
         if len(fname_split) <6:
             continue
         corner_str, ocr_str = fname_split[3], fname_split[4]
@@ -69,17 +71,19 @@ def write_plate_image(img_path, out_dir, label_txt):
         if len(corners) < 8:
             print('{}: {} length of corner pts shorter than 8'.format(i, image_name))
             continue
-        img = imread(image_name)
+        img =cv2.imread(image_name)
         if img is None:
             continue
-        plate_img = four_point_transform(img, corner_pts)
+        plate_img = four_point_transform(img, corners)
+        if plate_img is None: 
+            continue
         out_path = os.path.join(out_dir, bname.replace('.jpg', '_plate.jpg'))
         cv2.imwrite(out_path, plate_img)
 
         plate_ocr = ocr.strip()
         plate_label = '|' + '|'.join(plate_ocr.decode('utf8')) + '|'
         line = out_path + ';' + plate_label + '\n'
-        print line
+        #print line
         fo.write("%s" % line)
 
     fo.close()
@@ -87,11 +91,11 @@ def write_plate_image(img_path, out_dir, label_txt):
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Plate end to end test')
-    parser.add_argument('--img_dir', default='/ssd/wfei/data/ccpd/home/booy/booy/ccpd_dataset',
+    parser.add_argument('--img_dir', default='/ssd/wfei/data/ccpd/home/booy/booy/ccpd_dataset/ccpd_base',
                         type=str, help='Input test image dir')
-    parser.add_argument('--plate_dir', default='/ssd/wfei/data/ccpd/plates/',
+    parser.add_argument('--plate_dir', default='/ssd/wfei/data/ccpd/plates_base/',
                         type=str, help='Output plate image dir')
-    parser.add_argument('--label_txt', default='/ssd/wfei/data/ccpd/ccpd_selected_ocrlabel.txt',
+    parser.add_argument('--label_txt', default='/ssd/wfei/data/ccpd/ccpd_base_selected_ocrlabel.txt',
                         type=str, help='Output OCR label txt')
     args = parser.parse_args()
     return args
