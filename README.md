@@ -1,28 +1,3 @@
-# CCPD: Chinese City Parking Dataset
-
-## UPdate on 10/03/2019. CCPD2019 is now publicly available, is much more challenging with over 300k images and all annotations are refined. (If you are benefited from this dataset, please cite our paper.) It can be downloaded from:
- - [Google Drive the first part](https://drive.google.com/open?id=1AX2U3K9V-UpB8TjiVH8pL3tetyPt3f0p) , [Google Drive the second part](https://drive.google.com/open?id=1Zg3MtIvDoi83B2bkT0hionMxPNceHUpV) 
- 
- - [BaiduYun Drive](https://pan.baidu.com/s/1z1HWBe671Gn2ZAOApf9huA)
-
-This repository is designed to provide an open-source dataset for license plate detection and recognition, described in _《Towards End-to-End License Plate Detection and Recognition: A Large Dataset and Baseline》_. This dataset is open-source under MIT license. More details about this dataset are avialable at our ECCV 2018 paper (also available in this github) _《Towards End-to-End License Plate Detection and Recognition: A Large Dataset and Baseline》_. If you are benefited from this paper, please cite our paper as follows:
-
-```
-@inproceedings{xu2018towards,
-  title={Towards End-to-End License Plate Detection and Recognition: A Large Dataset and Baseline},
-  author={Xu, Zhenbo and Yang, Wei and Meng, Ajin and Lu, Nanxue and Huang, Huan},
-  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
-  pages={255--271},
-  year={2018}
-}
-```
-
-## Downloads(Dataset and models):
-
-### The google drive link for directly downloading the whole dataset: [google drive 12GB](https://drive.google.com/open?id=1fFqCXjhk7vE9yLklpJurEwP9vdLZmrJd). 
-
-### The baiduyun link for directly downloading the whole dataset: [.zip(14GB)](https://pan.baidu.com/s/1SFUy5HlImM9w-Tw9kVuLZw), [.tar.bz2(12GB)](https://pan.baidu.com/s/1FH6pFOFF2MwyWiqn6vCzGA).
-
 ### The nearly well-trained model for testing and fun (Short of time, trained only for 5 epochs, but enough for testing): 
 
 - Location module wR2.pth [google_drive](https://drive.google.com/open?id=1l_tIt7D3vmYNYZLOPbwx8qJpPVM82CP-), [baiduyun](https://pan.baidu.com/s/1Q3fPDHFYV5uibWwIQxPEOw)
