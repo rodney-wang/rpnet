@@ -34,7 +34,7 @@ ap.add_argument("-w", "--writeFile", default='fh02.out',
                 help="file for output")
 args = vars(ap.parse_args())
 
-wR2Path = './wR2/wR2.pth2'
+wR2Path = '/mnt/soulfs2/wfei/models/rpnet/wR2.pth'
 use_gpu = torch.cuda.is_available()
 print (use_gpu)
 
