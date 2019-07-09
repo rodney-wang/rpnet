@@ -37,6 +37,8 @@ def json_to_ocrtxt(json_file, ocrtxt_file, img_dir):
     fo = codecs.open(ocrtxt_file, "w", encoding='utf-8')
 
     for fname, label in json_data.iteritems():
+        if len(label) ==0:
+            continue
         ocr = label[0]['text'].strip()
 
         if ocr is None or len(ocr) ==0:
@@ -49,11 +51,12 @@ def json_to_ocrtxt(json_file, ocrtxt_file, img_dir):
         plate_ocr = plate_ocr.replace('-', '')
         plate_code = encode_plate(plate_ocr)
 
+        #if i%100==0:
         print '### Processing ', i, fname, ocr
         if plate_ocr.encode('utf8')[0:3] in provinces:
             cor = label[0]["coordinates"]
             #cor = cor.split(',')
-            print plate_ocr, len(plate_ocr), cor
+            #print plate_ocr, len(plate_ocr), cor
         else:
             continue
         if len(cor) < 8:
