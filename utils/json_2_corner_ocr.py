@@ -1,12 +1,8 @@
 #coding=utf-8
 import os
 import argparse
-import cv2
-import glob
 import json
 import codecs
-from shutil import copyfile
-#from cutplate import four_point_transform
 
 """
 Convert the json labels into box&ocr txt, 
@@ -18,17 +14,28 @@ e.g.
 Write the valid plates into out_folder 
 """
 
-chars = "1234567890QWERTYUPASDFGHJKLZXCVBNM京鄂津湘冀粤晋桂蒙琼辽渝吉川黑贵沪云苏藏浙陕皖甘闽青赣宁鲁新豫警港澳使领学试挂".decode('utf8')
-provinces = ["皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙", "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", "O"]
+#hars = "1234567890QWERTYUPASDFGHJKLZXCVBNM京鄂津湘冀粤晋桂蒙琼辽渝吉川黑贵沪云苏藏浙陕皖甘闽青赣宁鲁新豫警港澳使领学试挂".decode('utf8')
+provinces = ["皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙", "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", "-"]
 alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
-             'X', 'Y', 'Z', 'O']
+             'X', 'Y', 'Z', '-']
 ads = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-       'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '港', '澳', '警', '学', 'O']
+       'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '港', '澳', '警', '学', '-']
 
+prov_map = {p.decode('utf8'):index for index, p in enumerate(provinces)}
+albe_map = {p:index for index, p in enumerate(alphabets)}
+ads_map  = {p.decode('utf8'):index for index, p in enumerate(ads)}
 
 def encode_plate(plate_ocr):
-
-    return None
+    pcode  = prov_map[plate_ocr[0]]
+    abcode = albe_map[plate_ocr[1]]
+    plate_code = []
+    plate_code.extend([pcode, abcode])
+    for char in plate_ocr[2:]:
+        plate_code.append(ads_map[char])
+    #if seven digits plate, append last digits to the
+    if len(plate_ocr) ==7:
+        plate_code.append(38)
+    return plate_code
 
 def json_to_ocrtxt(json_file, ocrtxt_file, img_dir):
 

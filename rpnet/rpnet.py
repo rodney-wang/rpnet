@@ -222,6 +222,13 @@ class fh02(nn.Module):
             # nn.Dropout(),
             nn.Linear(128, adNum),
         )
+        self.classifier8 = nn.Sequential(
+            # nn.Dropout(),
+            nn.Linear(53248, 128),
+            # nn.ReLU(inplace=True),
+            # nn.Dropout(),
+            nn.Linear(128, adNum),
+        )
 
     def load_wR2(self, path):
         self.wR2 = wR2(numPoints)
@@ -275,7 +282,8 @@ class fh02(nn.Module):
         y4 = self.classifier5(_rois)
         y5 = self.classifier6(_rois)
         y6 = self.classifier7(_rois)
-        return boxLoc, [y0, y1, y2, y3, y4, y5, y6]
+        y7 = self.classifier7(_rois)
+        return boxLoc, [y0, y1, y2, y3, y4, y5, y6, y7]
 
 
 epoch_start = int(args["start_epoch"])
