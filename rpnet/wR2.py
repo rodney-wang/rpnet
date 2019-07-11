@@ -14,7 +14,7 @@ from torch.optim import lr_scheduler
 
 
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--images", required=True,
+ap.add_argument("-l", "--label_file", required=True,
                 help="path to the input file")
 ap.add_argument("-n", "--epochs", default=25,
                 help="epochs for train")
@@ -181,7 +181,7 @@ lrScheduler = lr_scheduler.StepLR(optimizer_conv, step_size=5, gamma=0.1)
 # optimizer_conv = optim.Adam(model_conv.parameters(), lr=0.01)
 
 # dst = LocDataLoader([args["images"]], imgSize)
-dst = ChaLocDataLoader(args["images"].split(','), imgSize)
+dst = ChaLocDataLoader(args["label_file"], imgSize)
 trainloader = DataLoader(dst, batch_size=batchSize, shuffle=True, num_workers=4)
 
 

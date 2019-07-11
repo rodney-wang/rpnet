@@ -92,13 +92,19 @@ class labelTestDataLoader(Dataset):
 
 
 class ChaLocDataLoader(Dataset):
-    def __init__(self, img_dir,imgSize, is_transform=None):
-        self.img_dir = img_dir
+    def __init__(self, co_list, imgSize, is_transform=None):
         self.img_paths = []
-        for i in range(len(img_dir)):
-            self.img_paths += [el for el in paths.list_images(img_dir[i])]
-        # self.img_paths = os.listdir(img_dir)
-        # print self.img_paths
+        self.corners = []
+        #self.ocrs = []
+        with open(co_list, "r") as ff:
+            for line in ff:
+                img_path, corner_str, ocr = line.split(';')
+                self.img_paths.append(img_path)
+                corner = [int(i) for i in corner_str.split(',')]
+                self.corners.append(corner)
+                #ocr = ocr.strip().decode('utf8')
+                #self.ocrs.append(ocr)
+
         self.img_size = imgSize
         self.is_transform = is_transform
 
@@ -108,30 +114,25 @@ class ChaLocDataLoader(Dataset):
     def __getitem__(self, index):
         img_name = self.img_paths[index]
         img = cv2.imread(img_name)
+        # img = img.astype('float32')
         resizedImage = cv2.resize(img, self.img_size)
-        resizedImage = np.reshape(resizedImage, (resizedImage.shape[2], resizedImage.shape[0], resizedImage.shape[1]))
+        resizedImage = np.transpose(resizedImage, (2,0,1))
+        resizedImage = resizedImage.astype('float32')
+        resizedImage /= 255.0
 
-        iname = img_name.rsplit('/', 1)[-1].rsplit('.', 1)[0].split('-')
-        [leftUp, rightDown] = [[int(eel) for eel in el.split('&')] for el in iname[2].split('_')]
-
-        # tps = [[int(eel) for eel in el.split('&')] for el in iname[2].split('_')]
-        # for dot in tps:
-        #     cv2.circle(img, (int(dot[0]), int(dot[1])), 2, (0, 0, 255), 2)
-        # cv2.imwrite("/home/xubb/1_new.jpg", img)
+        corners = self.corners[index]
+        x_max = int(max(corners[::2]))
+        y_max = int(max(corners[1::2]))
+        x_min = int(min(corners[::2]))
+        y_min = int(min(corners[1::2]))
+        leftUp     = [x_min, y_min]
+        rightDown  = [x_max, y_max]
 
         ori_w, ori_h = float(img.shape[1]), float(img.shape[0])
-        assert img.shape[0] == 1160
-        new_labels = [(leftUp[0] + rightDown[0])/(2*ori_w), (leftUp[1] + rightDown[1])/(2*ori_h), (rightDown[0]-leftUp[0])/ori_w, (rightDown[1]-leftUp[1])/ori_h]
+        new_labels = [(leftUp[0] + rightDown[0]) / (2 * ori_w), (leftUp[1] + rightDown[1]) / (2 * ori_h),
+                      (rightDown[0] - leftUp[0]) / ori_w, (rightDown[1] - leftUp[1]) / ori_h]
 
-        resizedImage = resizedImage.astype('float32')
-        # Y = Y.astype('int8')
-        resizedImage /= 255.0
-        # lbl = img_name.split('.')[0].rsplit('-',1)[-1].split('_')[:-1]
-        # lbl = img_name.split('/')[-1].split('.')[0].rsplit('-',1)[-1]
-        # lbl = map(int, lbl)
-        # lbl2 = [[el] for el in lbl]
 
-        # resizedImage = torch.from_numpy(resizedImage).float()
         return resizedImage, new_labels
 
 
