@@ -9,7 +9,7 @@ import numpy as np
 import os
 import argparse
 from time import time
-from load_data import *
+from load_aibee_data import *
 from torch.optim import lr_scheduler
 
 
@@ -171,8 +171,8 @@ else:
         model_conv = torch.nn.DataParallel(model_conv, device_ids=range(torch.cuda.device_count()))
         model_conv = model_conv.cuda()
 
-print(model_conv)
-print(get_n_params(model_conv))
+#print(model_conv)
+#print(get_n_params(model_conv))
 
 criterion = nn.MSELoss()
 optimizer_conv = optim.SGD(model_conv.parameters(), lr=0.001, momentum=0.9)
@@ -181,8 +181,11 @@ lrScheduler = lr_scheduler.StepLR(optimizer_conv, step_size=5, gamma=0.1)
 # optimizer_conv = optim.Adam(model_conv.parameters(), lr=0.01)
 
 # dst = LocDataLoader([args["images"]], imgSize)
+#print(args["label_file"])
+print("Loading data from label file: %s" %args["label_file"])
 dst = ChaLocDataLoader(args["label_file"], imgSize)
-trainloader = DataLoader(dst, batch_size=batchSize, shuffle=True, num_workers=4)
+
+trainloader = DataLoader(dst, batch_size=batchSize, shuffle=True, num_workers=8)
 
 
 def train_model(model, criterion, optimizer, num_epochs=25):

@@ -132,7 +132,7 @@ class ChaLocDataLoader(Dataset):
         new_labels = [(leftUp[0] + rightDown[0]) / (2 * ori_w), (leftUp[1] + rightDown[1]) / (2 * ori_h),
                       (rightDown[0] - leftUp[0]) / ori_w, (rightDown[1] - leftUp[1]) / ori_h]
 
-
+        #print(img_name, corners, new_labels)
         return resizedImage, new_labels
 
 
